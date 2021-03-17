@@ -25,12 +25,19 @@ app.get('/', (req, res) => {
     res.render('index')
 })
 
-app.get('/signup', (req, res) => {
+app.get('/register', (req, res) => {
     res.render('register')
 })
 
-app.post('/signup', async (req, res) => {
-    res.send(req.body)
+app.post('/register', async (req, res) => {
+    const {password, username} = req.body
+    const hash = await bcrypt.hash(password, 12)
+    const user = new User({
+        username, 
+        password: hash
+    })
+    await user.save()
+    res.redirect('/')
 })
 
 app.listen(3000, () => {
